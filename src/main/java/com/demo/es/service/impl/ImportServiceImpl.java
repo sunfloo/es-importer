@@ -48,9 +48,9 @@ public class ImportServiceImpl implements ImportService {
             // c 就是列的名字   v 就是列对应的值
             String c = null;
             String v = null;
-            Map<String, String> map = null;
+            Map<String, Object> map = null;
             ResultSetMetaData colData = rs.getMetaData();
-            List<Map<String, String>> dataList = new ArrayList<>();
+            List<Map<String, Object>> dataList = new ArrayList<>();
             while (rs.next()) {
                 count++;
                 map = new HashMap(128);
@@ -59,8 +59,18 @@ public class ImportServiceImpl implements ImportService {
                     v = rs.getString(c);
                     if ("id".equals(c)) {
                         map.put("commonPhraseId", v);
+                        continue;
                     } else if (c.contains("DateTime") && v != null && !v.isEmpty()) {
-                        map.put(c, String.valueOf(rs.getTimestamp(c).getTime()));
+                        map.put(c, rs.getTimestamp(c).getTime());
+                        continue;
+                    } else if ("tenantId".equals(c) || "seq".equals(c)) {
+                        map.put(c, Integer.valueOf(v));
+                        continue;
+                    } else if ("parentId".equals(c)) {
+                        map.put(c, Long.valueOf(v));
+                        continue;
+                    } else if ("leaf".equals(c) || "deleted".equals(c)) {
+                        map.put(c, "0".equals(v) ? false : true);
                         continue;
                     }
                     map.put(c, v);
@@ -70,8 +80,8 @@ public class ImportServiceImpl implements ImportService {
                 if (count % 10000 == 0) {
                     log.info("mysql handle data  number:" + count);
                     // 将数据添加到 bulkProcessor
-                    for (Map<String, String> hashMap2 : dataList) {
-                        bulkProcessor.add(new IndexRequest(ES_INDEX, ES_INDEX_TYPE).source(hashMap2));
+                    for (Map<String, Object> hashMap2 : dataList) {
+                        bulkProcessor.add(new IndexRequest(ES_INDEX, ES_INDEX_TYPE, String.valueOf(hashMap2.get("commonPhraseId"))).source(hashMap2));
                     }
                     // 每提交一次 清空 map 和  dataList
                     map.clear();
@@ -80,8 +90,8 @@ public class ImportServiceImpl implements ImportService {
                 }
             }
             // 处理 未提交的数据
-            for (Map<String, String> hashMap2 : dataList) {
-                bulkProcessor.add(new IndexRequest(ES_INDEX, ES_INDEX_TYPE).source(hashMap2));
+            for (Map<String, Object> hashMap2 : dataList) {
+                bulkProcessor.add(new IndexRequest(ES_INDEX, ES_INDEX_TYPE, String.valueOf(hashMap2.get("commonPhraseId"))).source(hashMap2));
             }
             bulkProcessor.flush();
 
