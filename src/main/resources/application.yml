@@ -1,0 +1,15 @@
+server:
+  port: 8083
+
+elasticsearch:
+  rest:
+    # Transport端口，英文逗号分隔  host1:port1,host2:port2...
+    uris: 127.0.0.1:9300
+    clustername: elasticsearch
+
+database:
+  mysql:
+    url: jdbc:mysql://127.0.0.1:3306/weichat?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    dname: com.mysql.jdbc.Driver
+    username: root
+    password: 1234
