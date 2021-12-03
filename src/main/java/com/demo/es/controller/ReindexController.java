@@ -1,6 +1,6 @@
 package com.demo.es.controller;
 
-import com.demo.es.service.ImportService;
+import com.demo.es.service.ReindexService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,18 +9,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.IOException;
 
 @Controller
-public class PositionController {
+public class ReindexController {
     @Autowired
-    private ImportService service;
+    private ReindexService service;
 
-    @RequestMapping("/importAll")
+   @RequestMapping("/_reindex")
     @ResponseBody
-    public   String  importAll(){
+    public String reIndex() {
         try {
-            service.importAll();
+            if (!service.reIndex()) {
+                return "failed";
+            }
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        return  "success";
+            return "failed";
+        } 
+        return "success";
     }
 }

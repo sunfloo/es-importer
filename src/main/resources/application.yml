@@ -7,9 +7,31 @@ elasticsearch:
     uris: 127.0.0.1:9300
     clustername: elasticsearch
 
-database:
-  mysql:
-    url: jdbc:mysql://127.0.0.1:3306/weichat?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
-    dname: com.mysql.jdbc.Driver
-    username: root
-    password: 1234
+#database:
+#  mysql:
+#    url: jdbc:mysql://127.0.0.1:3306/weichat?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+#    dname: com.mysql.jdbc.Driver
+#    username: root
+#    password: 1234
+
+es:
+  cs:
+    # 源索引名称
+    oldIndex: chatmessagehistory_2021-05-19
+    # 目标索引名称
+    newIndex: chatmessagehistory_2021-05-19-test3
+    # 索引类型
+    indexType: chatmessagehistory
+    # 老索引的id字段名称
+    oldIndexIdName: msgId
+    # 是否需要程序创建新索引，如果是，需要配置newIndexMapping
+    needCreateNewIndex: true
+    # 是否需要程序删除老索引，必须为true，否则新索引无法创建与老索引同名的别名
+    needDeleteOldIndex: true
+    # pageSize
+    scrollSize: 1000
+    # scroll持续时间，每请求一页数据就会刷新为这个值，超时后对应scrollId失效，单位ms
+    scrollExpire: 60000
+    # 新索引mapping，needCreateNewIndex为true时生效
+    newIndexMapping: "{\"properties\":{\"agentUserId\":{\"type\":\"string\",\"index\":\"not_analyzed\"},\"body\":{\"type\":\"string\",\"index\":\"not_analyzed\"},\"chatGroupId\":{\"type\":\"long\"},\"chatGroupSeqId\":{\"type\":\"long\"},\"contentType\":{\"type\":\"string\",\"index\":\"not_analyzed\"},\"createDateTime\":{\"type\":\"long\"},\"fromNicename\":{\"type\":\"string\",\"index\":\"not_analyzed\"},\"fromType\":{\"type\":\"string\",\"index\":\"not_analyzed\"},\"fromUserId\":{\"type\":\"string\",\"index\":\"not_analyzed\"},\"message\":{\"type\":\"string\",\"analyzer\":\"ik_max_word\"},\"messageType\":{\"type\":\"string\",\"index\":\"not_analyzed\"},\"msgId\":{\"type\":\"string\",\"index\":\"not_analyzed\"},\"organId\":{\"type\":\"integer\"},\"originType\":{\"type\":\"string\",\"index\":\"not_analyzed\"},\"serviceSessionId\":{\"type\":\"string\",\"index\":\"not_analyzed\",\"store\":true},\"techChannelId\":{\"type\":\"integer\"},\"techChannelName\":{\"type\":\"string\",\"index\":\"not_analyzed\"},\"techChannelType\":{\"type\":\"string\",\"index\":\"not_analyzed\"},\"tenantId\":{\"type\":\"integer\",\"store\":true}}}"
+#    newIndexMapping: "{\"properties\":{\"agentUserId\":{\"type\":\"string\",\"index\":\"not_analyzed\"},\"body\":{\"type\":\"string\",\"index\":\"not_analyzed\"},\"chatGroupId\":{\"type\":\"long\"},\"chatGroupSeqId\":{\"type\":\"long\"},\"contentType\":{\"type\":\"string\",\"index\":\"not_analyzed\"},\"createDateTime\":{\"type\":\"long\"},\"fromNicename\":{\"type\":\"string\",\"index\":\"not_analyzed\"},\"fromType\":{\"type\":\"string\",\"index\":\"not_analyzed\"},\"fromUserId\":{\"type\":\"string\",\"index\":\"not_analyzed\"},\"message\":{\"type\":\"string\",\"analyzer\":\"ik_max_word\"},\"messageType\":{\"type\":\"string\"},\"msgId\":{\"type\":\"string\",\"index\":\"not_analyzed\"},\"organId\":{\"type\":\"integer\"},\"originType\":{\"type\":\"string\",\"index\":\"not_analyzed\"},\"serviceSessionId\":{\"type\":\"string\",\"index\":\"not_analyzed\",\"store\":true},\"techChannelId\":{\"type\":\"integer\"},\"techChannelName\":{\"type\":\"string\",\"index\":\"not_analyzed\"},\"techChannelType\":{\"type\":\"string\",\"index\":\"not_analyzed\"},\"tenantId\":{\"type\":\"integer\",\"store\":true}}}"

@@ -27,6 +27,7 @@ public class EsConfig {
     @Value("${elasticsearch.rest.clustername:}")
     private String clustername;
 
+    
     @Bean
     public Client client() throws UnknownHostException {
         String[] split = hostlist.split(",");
